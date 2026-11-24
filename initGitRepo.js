@@ -10,7 +10,6 @@ async function setupGit() {
   await git.init({ fs, dir });
   console.log("Git repository initialized (.git directory created).");
 
-  // Helper to recursively get files excluding node_modules, .git, etc.
   function getFiles(baseDir, relative = "") {
     const fullPath = path.join(baseDir, relative);
     const entries = fs.readdirSync(fullPath, { withFileTypes: true });
@@ -51,12 +50,25 @@ async function setupGit() {
       name: "muhamedarsath74-alt",
       email: "muhamedarsath74@gmail.com"
     },
-    message: "feat: IoT Device Communication Monitoring and Validation System (CN, FSWD, FLAT)"
+    message: "feat: complete IoT Device Communication Monitoring and Validation System (CN, FSWD, FLAT)"
   });
   console.log("Commit created successfully with SHA:", sha);
 
-  // Set branch to main
-  await git.branch({ fs, dir, ref: "main", checkout: true });
+  // Ensure HEAD points to main
+  await git.writeRef({
+    fs,
+    dir,
+    ref: "refs/heads/main",
+    value: sha,
+    force: true
+  });
+  await git.writeRef({
+    fs,
+    dir,
+    ref: "HEAD",
+    value: "ref: refs/heads/main",
+    force: true
+  });
 
   // Add remote origin
   const remoteUrl = "https://github.com/muhamedarsath74-alt/Iot.git";
