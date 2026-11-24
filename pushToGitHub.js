@@ -8,21 +8,11 @@ async function pushToRemote() {
   const token = process.env.GITHUB_TOKEN || process.argv[2];
 
   if (!token) {
-    console.log("=======================================================");
-    console.log("GitHub Remote Push Helper");
-    console.log("Remote: https://github.com/muhamedarsath74-alt/Iot.git");
-    console.log("Branch: main");
-    console.log("=======================================================");
-    console.log("A GitHub Personal Access Token (PAT) is required to push.");
-    console.log("\nTo push now, run either:");
-    console.log("  node pushToGitHub.js <YOUR_GITHUB_TOKEN>");
-    console.log("Or:");
-    console.log("  $env:GITHUB_TOKEN=\"<YOUR_GITHUB_TOKEN>\"; npm run push");
-    console.log("=======================================================");
+    console.log("No token provided.");
     process.exit(1);
   }
 
-  console.log("Pushing main branch to https://github.com/muhamedarsath74-alt/Iot.git ...");
+  console.log("Pushing main branch to https://github.com/muhamedarsath74-alt/Iot.git with force=true...");
 
   try {
     const pushResult = await git.push({
@@ -31,6 +21,7 @@ async function pushToRemote() {
       dir,
       remote: "origin",
       ref: "main",
+      force: true,
       onAuth: () => ({
         username: token,
         password: ""
@@ -39,7 +30,7 @@ async function pushToRemote() {
 
     console.log("=======================================================");
     console.log("PUSH SUCCESSFUL!");
-    console.log("Repository live at: https://github.com/muhamedarsath74-alt/Iot");
+    console.log("Repository is now live at: https://github.com/muhamedarsath74-alt/Iot");
     console.log("=======================================================");
   } catch (err) {
     console.error("Push failed:", err.message);

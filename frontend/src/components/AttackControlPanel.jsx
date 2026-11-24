@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Bug, Zap, ShieldAlert, RotateCcw, AlertTriangle, Radio } from "lucide-react";
+import { Bug, Zap, RotateCcw } from "lucide-react";
 
 export function AttackControlPanel({ selectedDeviceId, onActionExecuted }) {
   const [isInjecting, setIsInjecting] = useState(false);
@@ -18,16 +18,31 @@ export function AttackControlPanel({ selectedDeviceId, onActionExecuted }) {
           targetId: target
         })
       });
-      const data = await res.json();
+      if (res.ok) {
+        const data = await res.json();
+        setLastAction({
+          type: attackType,
+          target: target,
+          timestamp: new Date().toLocaleTimeString(),
+          success: true
+        });
+        if (onActionExecuted) onActionExecuted(data);
+      } else {
+        throw new Error("Backend offline; using in-browser simulator");
+      }
+    } catch {
+      // In-browser simulation dispatch for Vercel static hosting
+      window.dispatchEvent(
+        new CustomEvent("INJECT_ATTACK", {
+          detail: { attackType, targetId: target }
+        })
+      );
       setLastAction({
         type: attackType,
         target: target,
         timestamp: new Date().toLocaleTimeString(),
         success: true
       });
-      if (onActionExecuted) onActionExecuted(data);
-    } catch (err) {
-      console.error("Attack injection error", err);
     } finally {
       setIsInjecting(false);
     }
