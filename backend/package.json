@@ -1,0 +1,16 @@
+{
+  "name": "iot-validation-backend",
+  "version": "1.0.0",
+  "description": "IoT Device Communication Monitoring and Validation System (CN, FSWD, FLAT)",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
+    "ws": "^8.18.0"
+  }
+}
